@@ -1,48 +1,56 @@
 import 'package:flutter/material.dart';
-import 'package:elesafe_app/features/map/map_screen.dart';
-
-class AlertLog {
-  final String title;
-  final String timestamp;
-  final IconData icon;
-
-  AlertLog({
-    required this.title,
-    required this.timestamp,
-    required this.icon,
-  });
-}
+import 'package:go_router/go_router.dart';
+import 'package:elesafe_app/router/app_router.dart';
 
 class AlertScreen extends StatelessWidget {
   const AlertScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final List<AlertLog> alerts = [
-      AlertLog(
-        title: 'Elephant detected\nnear crossing 1',
+    final List<AlertLogDataModel> alerts = [
+      AlertLogDataModel(
+        title: 'Elephant detected near crossing 1',
         timestamp: '2025-10-04 21:32',
-        icon: Icons.error_outline,
       ),
-      AlertLog(
-        title: 'Elephant detected\nnear crossing 2',
+      AlertLogDataModel(
+        title: 'Elephant detected near crossing 2',
         timestamp: '2025-10-04 21:32',
-        icon: Icons.error_outline,
       ),
-      AlertLog(
-        title: 'Elephant detected\nnear crossing 1',
+      AlertLogDataModel(
+        title: 'Elephant detected near crossing 1',
         timestamp: '2025-10-04 21:32',
-        icon: Icons.error_outline,
       ),
-      AlertLog(
-        title: 'Elephant detected\nnear crossing 2',
+      AlertLogDataModel(
+        title: 'Elephant detected near crossing 2',
         timestamp: '2025-10-04 21:32',
-        icon: Icons.error_outline,
       ),
-      AlertLog(
-        title: 'Elephant detected\nnear crossing 1',
+      AlertLogDataModel(
+        title: 'Elephant detected near crossing 1',
         timestamp: '2025-10-04 21:32',
-        icon: Icons.error_outline,
+      ),
+      AlertLogDataModel(
+        title: 'Elephant detected near crossing 2',
+        timestamp: '2025-10-04 21:32',
+      ),
+      AlertLogDataModel(
+        title: 'Elephant detected near crossing 1',
+        timestamp: '2025-10-04 21:32',
+      ),
+      AlertLogDataModel(
+        title: 'Elephant detected near crossing 2',
+        timestamp: '2025-10-04 21:32',
+      ),
+      AlertLogDataModel(
+        title: 'Elephant detected near crossing 2',
+        timestamp: '2025-10-04 21:32',
+      ),
+      AlertLogDataModel(
+        title: 'Elephant detected near crossing 1',
+        timestamp: '2025-10-04 21:32',
+      ),
+      AlertLogDataModel(
+        title: 'Elephant detected near crossing 2',
+        timestamp: '2025-10-04 21:32',
       ),
     ];
 
@@ -67,20 +75,13 @@ class AlertScreen extends StatelessWidget {
         itemCount: alerts.length,
         itemBuilder: (context, index) {
           return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const MapScreen(),
-                ),
-              );
-            },
+            onTap: () => context.push(AppRouter.mapPath),
             child: Container(
-              margin: const EdgeInsets.only(bottom: 15),
+              margin: const EdgeInsets.only(bottom: 14),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.withValues(alpha: 0.1),
@@ -98,20 +99,20 @@ class AlertScreen extends StatelessWidget {
                 children: [
                   // Alert Icon
                   Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFff4444),
+                    width: 40,
+                    height: 40,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFff4444),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
                       Icons.error_outline,
                       color: Colors.white,
-                      size: 30,
+                      size: 24,
                     ),
                   ),
                   const SizedBox(width: 16),
-                  
+
                   // Alert Details
                   Expanded(
                     child: Column(
@@ -120,9 +121,9 @@ class AlertScreen extends StatelessWidget {
                         Text(
                           alerts[index].title,
                           style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black87,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
                             height: 1.3,
                           ),
                         ),
@@ -130,8 +131,8 @@ class AlertScreen extends StatelessWidget {
                         Text(
                           alerts[index].timestamp,
                           style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey[600],
+                            fontSize: 15,
+                            color: Colors.grey[800],
                           ),
                         ),
                       ],
@@ -145,4 +146,14 @@ class AlertScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class AlertLogDataModel {
+  final String title;
+  final String timestamp;
+
+  AlertLogDataModel({
+    required this.title,
+    required this.timestamp,
+  });
 }

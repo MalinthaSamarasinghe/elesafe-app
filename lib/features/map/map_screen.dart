@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:elesafe_app/features/alert/models/alert_data_model.dart';
 
@@ -17,7 +16,6 @@ class _MapScreenState extends State<MapScreen> {
   final CameraTargetBounds _cameraTargetBounds = CameraTargetBounds(lankaBounds);
   final MinMaxZoomPreference _minMaxZoomPreference = const MinMaxZoomPreference(5.0, 16.0);
   late CameraPosition _initialCameraPosition;
-  String _mapStyle = '';
   final Set<Marker> _markers = {};
 
   @override
@@ -28,7 +26,7 @@ class _MapScreenState extends State<MapScreen> {
     if (widget.alertData != null) {
       _initialCameraPosition = CameraPosition(
         target: widget.alertData!.location,
-        zoom: 13.0,
+        zoom: 14.0,
       );
       _addAlertMarker();
     } else {
@@ -37,11 +35,6 @@ class _MapScreenState extends State<MapScreen> {
         zoom: 7.5,
       );
     }
-
-    // Load custom map style
-    rootBundle.loadString('assets/google_map_styles/map_styles.json').then((string) {
-      _mapStyle = string;
-    });
   }
 
   void _addAlertMarker() {
@@ -89,16 +82,15 @@ class _MapScreenState extends State<MapScreen> {
             initialCameraPosition: _initialCameraPosition,
             onMapCreated: (controller) => _mapController = controller,
             markers: _markers,
-            style: _mapStyle,
-            myLocationEnabled: true,
+            myLocationEnabled: false,
             rotateGesturesEnabled: true,
             scrollGesturesEnabled: true,
             tiltGesturesEnabled: true,
             zoomGesturesEnabled: true,
-            myLocationButtonEnabled: true,
-            zoomControlsEnabled: true,
-            compassEnabled: true,
-            mapToolbarEnabled: true,
+            myLocationButtonEnabled: false,
+            zoomControlsEnabled: false,
+            compassEnabled: false,
+            mapToolbarEnabled: false,
             indoorViewEnabled: false,
             trafficEnabled: false,
             cameraTargetBounds: _cameraTargetBounds,
@@ -107,6 +99,7 @@ class _MapScreenState extends State<MapScreen> {
             onTap: (_) {
               FocusManager.instance.primaryFocus?.unfocus();
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              _mapController.hideMarkerInfoWindow(MarkerId(widget.alertData!.id));
             },
           ),
 
@@ -118,9 +111,7 @@ class _MapScreenState extends State<MapScreen> {
               right: 20,
               child: Card(
                 elevation: 8,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(

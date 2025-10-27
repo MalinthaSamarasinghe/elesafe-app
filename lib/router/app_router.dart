@@ -114,27 +114,3 @@ class NotFoundScreen extends StatelessWidget {
     );
   }
 }
-
-/// The Not Authorized Screen
-class NotAuthorizedScreen extends StatelessWidget {
-  final String uri;
-
-  const NotAuthorizedScreen({super.key, required this.uri});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Not Authorized')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You are not authorized to view this page'),
-            const SizedBox(height: 16),
-            Text('Requested URI: $uri'),
-          ],
-        ),
-      ),
-    );
-  }
-}

@@ -1,7 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:elesafe_app/features/alert/models/alert_data_model.dart';
 
-class MapScreen extends StatelessWidget {
-  const MapScreen({super.key});
+class MapScreen extends StatefulWidget {
+  final AlertDataModel? alertData;
+
+  const MapScreen({super.key, this.alertData});
+
+  @override
+  State<MapScreen> createState() => _MapScreenState();
+}
+
+class _MapScreenState extends State<MapScreen> {
+  late GoogleMapController _mapController;
+  final CameraTargetBounds _cameraTargetBounds = CameraTargetBounds(lankaBounds);
+  final MinMaxZoomPreference _minMaxZoomPreference = const MinMaxZoomPreference(5.0, 16.0);
+  late CameraPosition _initialCameraPosition;
+  String _mapStyle = '';
+  final Set<Marker> _markers = {};
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Set initial camera position based on alert data or default to Sri Lanka
+    if (widget.alertData != null) {
+      _initialCameraPosition = CameraPosition(
+        target: widget.alertData!.location,
+        zoom: 13.0,
+      );
+      _addAlertMarker();
+    } else {
+      _initialCameraPosition = const CameraPosition(
+        target: LatLng(7.8731, 80.7718), // Default to Sri Lanka
+        zoom: 7.5,
+      );
+    }
+
+    // Load custom map style
+    rootBundle.loadString('assets/google_map_styles/map_styles.json').then((string) {
+      _mapStyle = string;
+    });
+  }
+
+  void _addAlertMarker() {
+    if (widget.alertData != null) {
+      final marker = Marker(
+        markerId: MarkerId(widget.alertData!.id),
+        position: widget.alertData!.location,
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+        infoWindow: InfoWindow(
+          title: widget.alertData!.title,
+          snippet: widget.alertData!.description,
+        ),
+      );
+      _markers.add(marker);
+    }
+  }
+
+  @override
+  void dispose() {
+    _mapController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,142 +85,128 @@ class MapScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          // Map Background (Placeholder)
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-            ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.map_outlined,
-                    size: 100,
-                    color: Colors.grey[400],
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Map View',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Integrate Google Maps or other map provider',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[500],
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
+          GoogleMap(
+            initialCameraPosition: _initialCameraPosition,
+            onMapCreated: (controller) => _mapController = controller,
+            markers: _markers,
+            style: _mapStyle,
+            myLocationEnabled: true,
+            rotateGesturesEnabled: true,
+            scrollGesturesEnabled: true,
+            tiltGesturesEnabled: true,
+            zoomGesturesEnabled: true,
+            myLocationButtonEnabled: true,
+            zoomControlsEnabled: true,
+            compassEnabled: true,
+            mapToolbarEnabled: true,
+            indoorViewEnabled: false,
+            trafficEnabled: false,
+            cameraTargetBounds: _cameraTargetBounds,
+            minMaxZoomPreference: _minMaxZoomPreference,
+            mapType: MapType.normal,
+            onTap: (_) {
+              FocusManager.instance.primaryFocus?.unfocus();
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            },
           ),
-          
-          // Location Markers (Example positions)
-          Positioned(
-            top: 150,
-            right: 80,
-            child: _buildLocationMarker(),
-          ),
-          Positioned(
-            top: 250,
-            right: 100,
-            child: _buildLocationMarker(),
-          ),
-          
-          // Bottom Alert Card
-          Positioned(
-            bottom: 30,
-            left: 20,
-            right: 20,
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    spreadRadius: 2,
-                    blurRadius: 15,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 10,
-                    height: 10,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFff4444),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Text(
-                          'Elephant Detected',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+
+          // Alert info card if alert data is available
+          if (widget.alertData != null)
+            Positioned(
+              bottom: 20,
+              left: 20,
+              right: 20,
+              child: Card(
+                elevation: 8,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFff4444),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.error_outline,
+                              color: Colors.white,
+                              size: 24,
+                            ),
                           ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.alertData!.title,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  widget.alertData!.timestamp,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        widget.alertData!.description,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.black87,
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '2025-10-04 21:32',
-                          style: TextStyle(
-                            fontSize: 14,
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.location_on,
+                            size: 16,
                             color: Colors.grey[600],
                           ),
-                        ),
-                      ],
-                    ),
+                          const SizedBox(width: 4),
+                          Text(
+                            'Lat: ${widget.alertData!.location.latitude.toStringAsFixed(4)}, '
+                            'Lng: ${widget.alertData!.location.longitude.toStringAsFixed(4)}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLocationMarker() {
-    return Container(
-      width: 50,
-      height: 60,
-      child: Stack(
-        children: [
-          Positioned(
-            bottom: 0,
-            left: 10,
-            child: Container(
-              width: 30,
-              height: 30,
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.2),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-          const Icon(
-            Icons.location_on,
-            color: Color(0xFFff4444),
-            size: 50,
-          ),
         ],
       ),
     );
   }
 }
+
+final LatLngBounds lankaBounds = LatLngBounds(
+  southwest: const LatLng(5.9167, 79.6600),
+  northeast: const LatLng(9.8333, 81.8800),
+);

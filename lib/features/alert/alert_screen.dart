@@ -1,56 +1,85 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:elesafe_app/router/app_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:elesafe_app/features/alert/models/alert_data_model.dart';
 
 class AlertScreen extends StatelessWidget {
   const AlertScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final List<AlertLogDataModel> alerts = [
-      AlertLogDataModel(
+    // Sample alerts with actual locations in Sri Lanka
+    final List<AlertDataModel> alerts = [
+      AlertDataModel(
+        id: '1',
         title: 'Elephant detected near crossing 1',
-        timestamp: '2025-10-04 21:32',
+        timestamp: '2025-10-27 21:32',
+        location: const LatLng(7.2906, 80.6337), // Kandy area
+        description: 'Wild elephant spotted crossing the road near Kandy',
       ),
-      AlertLogDataModel(
+      AlertDataModel(
+        id: '2',
         title: 'Elephant detected near crossing 2',
-        timestamp: '2025-10-04 21:32',
+        timestamp: '2025-10-27 20:15',
+        location: const LatLng(8.3114, 80.4037), // Anuradhapura area
+        description: 'Elephant herd detected near agricultural area',
       ),
-      AlertLogDataModel(
-        title: 'Elephant detected near crossing 1',
-        timestamp: '2025-10-04 21:32',
+      AlertDataModel(
+        id: '3',
+        title: 'Elephant detected near crossing 3',
+        timestamp: '2025-10-27 19:45',
+        location: const LatLng(6.9271, 79.8612), // Colombo outskirts
+        description: 'Single elephant spotted near residential area',
       ),
-      AlertLogDataModel(
-        title: 'Elephant detected near crossing 2',
-        timestamp: '2025-10-04 21:32',
+      AlertDataModel(
+        id: '4',
+        title: 'Elephant detected near crossing 4',
+        timestamp: '2025-10-27 18:20',
+        location: const LatLng(7.9553, 81.0188), // Polonnaruwa area
+        description: 'Multiple elephants near national park boundary',
       ),
-      AlertLogDataModel(
-        title: 'Elephant detected near crossing 1',
-        timestamp: '2025-10-04 21:32',
+      AlertDataModel(
+        id: '5',
+        title: 'Elephant detected near crossing 5',
+        timestamp: '2025-10-27 17:50',
+        location: const LatLng(6.0535, 80.2210), // Galle area
+        description: 'Elephant crossing detected on coastal road',
       ),
-      AlertLogDataModel(
-        title: 'Elephant detected near crossing 2',
-        timestamp: '2025-10-04 21:32',
+      AlertDataModel(
+        id: '6',
+        title: 'Elephant detected near crossing 6',
+        timestamp: '2025-10-27 16:30',
+        location: const LatLng(8.5874, 81.2152), // Trincomalee area
+        description: 'Young elephant spotted near village',
       ),
-      AlertLogDataModel(
-        title: 'Elephant detected near crossing 1',
-        timestamp: '2025-10-04 21:32',
+      AlertDataModel(
+        id: '7',
+        title: 'Elephant detected near crossing 7',
+        timestamp: '2025-10-27 15:10',
+        location: const LatLng(7.4818, 80.3609), // Matale area
+        description: 'Elephant herd moving through forest edge',
       ),
-      AlertLogDataModel(
-        title: 'Elephant detected near crossing 2',
-        timestamp: '2025-10-04 21:32',
+      AlertDataModel(
+        id: '8',
+        title: 'Elephant detected near crossing 8',
+        timestamp: '2025-10-27 14:25',
+        location: const LatLng(6.9934, 81.0550), // Badulla area
+        description: 'Elephant detected near tea plantation',
       ),
-      AlertLogDataModel(
-        title: 'Elephant detected near crossing 2',
-        timestamp: '2025-10-04 21:32',
+      AlertDataModel(
+        id: '9',
+        title: 'Elephant detected near crossing 9',
+        timestamp: '2025-10-27 13:40',
+        location: const LatLng(9.6615, 80.0255), // Jaffna area
+        description: 'Elephant sighting reported in northern region',
       ),
-      AlertLogDataModel(
-        title: 'Elephant detected near crossing 1',
-        timestamp: '2025-10-04 21:32',
-      ),
-      AlertLogDataModel(
-        title: 'Elephant detected near crossing 2',
-        timestamp: '2025-10-04 21:32',
+      AlertDataModel(
+        id: '10',
+        title: 'Elephant detected near crossing 10',
+        timestamp: '2025-10-27 12:55',
+        location: const LatLng(7.8731, 80.7718), // Central Sri Lanka
+        description: 'Elephant activity detected in central province',
       ),
     ];
 
@@ -75,7 +104,8 @@ class AlertScreen extends StatelessWidget {
         itemCount: alerts.length,
         itemBuilder: (context, index) {
           return GestureDetector(
-            onTap: () => context.push(AppRouter.mapPath),
+            // Pass alert data to map screen using go_router extra parameter
+            onTap: () => context.push(AppRouter.mapPath, extra: alerts[index]),
             child: Container(
               margin: const EdgeInsets.only(bottom: 14),
               padding: const EdgeInsets.all(16),
@@ -146,14 +176,4 @@ class AlertScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-class AlertLogDataModel {
-  final String title;
-  final String timestamp;
-
-  AlertLogDataModel({
-    required this.title,
-    required this.timestamp,
-  });
 }

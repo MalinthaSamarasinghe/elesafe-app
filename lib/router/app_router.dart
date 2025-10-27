@@ -4,6 +4,7 @@ import 'package:elesafe_app/router/router_observer.dart';
 import 'package:elesafe_app/features/map/map_screen.dart';
 import 'package:elesafe_app/features/alert/alert_screen.dart';
 import 'package:elesafe_app/features/signin/signin_screen.dart';
+import 'package:elesafe_app/features/alert/models/alert_data_model.dart';
 
 /// AppRouter is responsible for creating and configuring the app's navigation structure
 class AppRouter {
@@ -70,7 +71,8 @@ class AppRouter {
         path: mapPath,
         name: 'map',
         builder: (BuildContext context, GoRouterState state) {
-          return const MapScreen();
+          final alertData = state.extra as AlertDataModel?;
+          return MapScreen(alertData: alertData);
         },
       ),
       GoRoute(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:elesafe_app/features/alert/alert_screen.dart';
+import 'package:go_router/go_router.dart';
+import 'package:elesafe_app/router/app_router.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -13,19 +14,17 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF1a3d5c),
-              Color(0xFF0d2438),
-            ],
-          ),
-        ),
+        decoration: const BoxDecoration(color: Color(0xFF11346a)),
         child: SafeArea(
           child: Center(
             child: SingleChildScrollView(
@@ -33,85 +32,46 @@ class _SignInScreenState extends State<SignInScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Elephant Icon
-                  Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Icon(
-                      Icons.nature_people,
-                      size: 80,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  
+                  // Elephant Logo
+                  Image.asset('assets/images/elephant_logo.png', height: 130),
+                  const SizedBox(height: 15),
+
                   // Title
                   const Text(
                     'ELEPHANT',
-                    style: TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      letterSpacing: 2,
-                    ),
+                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 3),
                   ),
-                  const SizedBox(height: 8),
                   const Text(
                     'ALERT SYSTEM',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w300,
-                      color: Colors.white,
-                      letterSpacing: 4,
-                    ),
+                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.w400, color: Colors.white, letterSpacing: 2),
                   ),
-                  const SizedBox(height: 60),
-                  
+                  const SizedBox(height: 50),
+
                   // Email Field
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(
-                        color: Colors.white.withOpacity(0.3),
-                        width: 1,
-                      ),
+                      borderRadius: BorderRadius.circular(18),
+                      color: Colors.white.withValues(alpha: 0.1),
                     ),
                     child: TextField(
                       controller: _emailController,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         hintText: 'Email',
-                        hintStyle: TextStyle(
-                          color: Colors.white.withOpacity(0.6),
-                        ),
-                        prefixIcon: Icon(
-                          Icons.person_outline,
-                          color: Colors.white.withOpacity(0.8),
-                        ),
+                        hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
+                        prefixIcon: Icon(Icons.person_outline, color: Colors.white.withValues(alpha: 0.8)),
                         border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 18,
-                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
                       ),
                     ),
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // Password Field
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(
-                        color: Colors.white.withOpacity(0.3),
-                        width: 1,
-                      ),
+                      borderRadius: BorderRadius.circular(18),
+                      color: Colors.white.withValues(alpha: 0.1),
                     ),
                     child: TextField(
                       controller: _passwordController,
@@ -119,66 +79,38 @@ class _SignInScreenState extends State<SignInScreen> {
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         hintText: 'Password',
-                        hintStyle: TextStyle(
-                          color: Colors.white.withOpacity(0.6),
-                        ),
-                        prefixIcon: Icon(
-                          Icons.lock_outline,
-                          color: Colors.white.withOpacity(0.8),
-                        ),
+                        hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
+                        prefixIcon: Icon(Icons.lock_outline, color: Colors.white.withValues(alpha: 0.8)),
                         border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 18,
-                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
                       ),
                     ),
                   ),
                   const SizedBox(height: 30),
-                  
+
                   // Login Button
                   SizedBox(
                     width: double.infinity,
                     height: 55,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AlertScreen(),
-                          ),
-                        );
-                      },
+                      onPressed: () => context.go(AppRouter.alertPath),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF4a7ba7),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                        backgroundColor: const Color(0xFF386cc0),
                         elevation: 0,
                       ),
                       child: const Text(
                         'Login',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                          letterSpacing: 1,
-                        ),
+                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500, color: Colors.white),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  
+                  const SizedBox(height: 10),
+
                   // Forgot Password
                   TextButton(
                     onPressed: () {},
-                    child: Text(
-                      'Forgot password?',
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 14,
-                      ),
-                    ),
+                    child: Text('Forgot password?', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, color: Colors.white.withValues(alpha: 0.8))),
                   ),
                 ],
               ),
@@ -187,12 +119,5 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
   }
 }

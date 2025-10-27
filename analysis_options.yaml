@@ -21,6 +21,9 @@ analyzer:
     dead_code: warning  # Highlights unused code to keep the project clean
     todo: ignore  # Allows T0D0 comments without showing warnings
 
+formatter:
+  trailing_commas: preserve # Preserves existing trailing commas in code formatting
+
 linter:
   # The lint rules applied to this project can be customized in the
   # section below to disable rules from the `package:flutter_lints/flutter.yaml`
@@ -66,7 +69,6 @@ linter:
     always_declare_return_types: true  # Enforces specifying return types in functions for clarity
     use_setters_to_change_properties: true  # Encourages using setters instead of exposing fields directly
     prefer_typing_uninitialized_variables: true  # Encourages specifying types for uninitialized variables for clarity
-    require_trailing_commas: false  # Disables automatic trailing comma insertion
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
